@@ -1,5 +1,6 @@
 package org.pitest.classycle;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -66,8 +67,8 @@ public class ClassycleAnalyseMojo extends AbstractMojo implements Project {
       MojoFailureException {
 
     try {
-
-      final ClassycleAnalyser analyser = new ClassycleAnalyser(this);
+      final ClassycleAnalyser analyser = new ClassycleAnalyser(this,
+          new StreamFactory(this.getTargetDirectory() + File.separator + "classycle"));
       analyser.analyse();
 
     } catch (final IOException e) {

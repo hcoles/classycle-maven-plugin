@@ -3,11 +3,13 @@ package org.pitest.classycle;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,25 +19,32 @@ import org.mockito.MockitoAnnotations;
 public class ClassycleAnalyserTest {
 
   @Mock
-  private Project           project;
+  private Project                                  project;
 
-  private StringWriter      writer;
+  private final Map<String, ByteArrayOutputStream> output = new HashMap<String, ByteArrayOutputStream>();
 
-  private ClassycleAnalyser testee;
+  private ClassycleAnalyser                        testee;
+
+  private StreamFactory                            sf;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     when(this.project.getOutputDirectory()).thenReturn(testOutput());
     when(this.project.getExcludingClasses()).thenReturn(null);
-    this.writer = new StringWriter();
+    this.sf = createStreamFactory();
+    this.testee = new ClassycleAnalyser(this.project, this.sf);
+  }
 
-    this.testee = new ClassycleAnalyser(this.project) {
+  private StreamFactory createStreamFactory() {
+    return new StreamFactory(null) {
       @Override
-      Writer createWriter(final File file) throws IOException {
-        return ClassycleAnalyserTest.this.writer;
+      public OutputStream createStream(final String fileName)
+          throws IOException {
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ClassycleAnalyserTest.this.output.put(fileName, os);
+        return os;
       }
-
     };
   }
 
@@ -48,15 +57,15 @@ public class ClassycleAnalyserTest {
   public void shouldNotMergeInnerClassesWhenFlagSetToFalse() throws IOException {
     when(this.project.isMergeInnerClasses()).thenReturn(false);
     this.testee.analyse();
-    assertThat(this.writer.toString()).contains(
-        classEntryFor("com.example.Bar$NestedBar"));
+    assertThat(xmlOutput())
+        .contains(classEntryFor("com.example.Bar$NestedBar"));
   }
 
   @Test
   public void shouldMergeInnerClassesWhenFlagSetToTrue() throws IOException {
     when(this.project.isMergeInnerClasses()).thenReturn(true);
     this.testee.analyse();
-    assertThat(this.writer.toString()).doesNotContain(
+    assertThat(xmlOutput()).doesNotContain(
         classEntryFor("com.example.Bar$NestedBar"));
   }
 
@@ -65,7 +74,7 @@ public class ClassycleAnalyserTest {
       throws IOException {
     when(this.project.isPackagesOnly()).thenReturn(false);
     this.testee.analyse();
-    assertThat(this.writer.toString()).contains("<classes");
+    assertThat(xmlOutput()).contains("<classes");
   }
 
   @Test
@@ -73,15 +82,14 @@ public class ClassycleAnalyserTest {
       throws IOException {
     when(this.project.isPackagesOnly()).thenReturn(true);
     this.testee.analyse();
-    assertThat(this.writer.toString()).doesNotContain("<classes");
+    assertThat(xmlOutput()).doesNotContain("<classes");
   }
 
   @Test
   public void shouldIncludeAllClassesWhenNoneExcluded() throws IOException {
     when(this.project.getExcludingClasses()).thenReturn(null);
     this.testee.analyse();
-    assertThat(this.writer.toString()).contains(
-        classEntryFor("com.example.Foo"));
+    assertThat(xmlOutput()).contains(classEntryFor("com.example.Foo"));
   }
 
   @Test
@@ -90,8 +98,7 @@ public class ClassycleAnalyserTest {
     when(this.project.getExcludingClasses()).thenReturn(
         Arrays.asList("com.example.Foo"));
     this.testee.analyse();
-    assertThat(this.writer.toString()).doesNotContain(
-        classEntryFor("com.example.Foo"));
+    assertThat(xmlOutput()).doesNotContain(classEntryFor("com.example.Foo"));
   }
 
   @Test
@@ -100,10 +107,8 @@ public class ClassycleAnalyserTest {
     when(this.project.getExcludingClasses()).thenReturn(
         Arrays.asList("com.example.Foo", "com.example.Bar"));
     this.testee.analyse();
-    assertThat(this.writer.toString()).doesNotContain(
-        classEntryFor("com.example.Foo"));
-    assertThat(this.writer.toString()).doesNotContain(
-        classEntryFor("com.example.Bar"));
+    assertThat(xmlOutput()).doesNotContain(classEntryFor("com.example.Foo"));
+    assertThat(xmlOutput()).doesNotContain(classEntryFor("com.example.Bar"));
   }
 
   @Test
@@ -112,10 +117,8 @@ public class ClassycleAnalyserTest {
     when(this.project.getIncludingClasses()).thenReturn(
         Arrays.asList("com.example.Foo"));
     this.testee.analyse();
-    assertThat(this.writer.toString()).contains(
-        classEntryFor("com.example.Foo"));
-    assertThat(this.writer.toString()).doesNotContain(
-        classEntryFor("com.example.Bar"));
+    assertThat(xmlOutput()).contains(classEntryFor("com.example.Foo"));
+    assertThat(xmlOutput()).doesNotContain(classEntryFor("com.example.Bar"));
   }
 
   @Test
@@ -124,10 +127,26 @@ public class ClassycleAnalyserTest {
     when(this.project.getIncludingClasses()).thenReturn(
         Arrays.asList("com.example.Foo", "com.example.Bar"));
     this.testee.analyse();
-    assertThat(this.writer.toString()).contains(
-        classEntryFor("com.example.Foo"));
-    assertThat(this.writer.toString()).contains(
-        classEntryFor("com.example.Bar"));
+    assertThat(xmlOutput()).contains(classEntryFor("com.example.Foo"));
+    assertThat(xmlOutput()).contains(classEntryFor("com.example.Bar"));
+  }
+
+  @Test
+  public void shouldWriteXSLTFileToOutputDir() throws IOException {
+    this.testee.analyse();
+    assertThat(output.get("reportXMLtoHTML.xsl")).isNotNull();
+  }
+  
+  @Test
+  public void shouldWriteImagesOutputDir() throws IOException {
+    this.testee.analyse();
+    assertThat(output.get("images/class.png")).isNotNull();
+  }
+  
+  String xmlOutput() {
+    final ByteArrayOutputStream bos = this.output
+        .get(ClassycleAnalyser.XML_FILE);
+    return new String(bos.toByteArray());
   }
 
   private String classEntryFor(final String clazz) {

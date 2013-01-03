@@ -1,10 +1,9 @@
 package org.pitest.classycle;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,10 +17,14 @@ import classycle.util.WildCardPattern;
 
 public class ClassycleAnalyser {
 
+  public static final String XML_FILE = "classycle.xml";
+  
   private final Project project;
+  private final StreamFactory streamFactory;
 
-  ClassycleAnalyser(final Project project) {
+  ClassycleAnalyser(final Project project, StreamFactory streamFactory) {
     this.project = project;
+    this.streamFactory = streamFactory;
   }
 
   public void analyse() throws IOException {
@@ -33,14 +36,21 @@ public class ClassycleAnalyser {
         getReflectionPattern(), this.project.isMergeInnerClasses());
     analyser.readAndAnalyse(this.project.isPackagesOnly());
     writeReport(analyser);
-
   }
 
   private void writeReport(final Analyser analyser) throws IOException {
-    final File f = new File(this.project.getTargetDirectory(), "classycle.xml");
-    final PrintWriter writer = new PrintWriter(createWriter(f));
+    final PrintWriter writer = new PrintWriter(streamFactory.createStream(XML_FILE));
     analyser.printXML("Cycles", this.project.isPackagesOnly(), writer);
     writer.close();
+ 
+    copyResourceForHtmlViewing();
+    
+  }
+
+  private void copyResourceForHtmlViewing() throws IOException {
+    InputStream zipFileStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("resources.zip");
+    Unzip uz = new Unzip(streamFactory);
+    uz.extractZipFile(zipFileStream);
   }
 
   private StringPattern getReflectionPattern() {
@@ -72,7 +82,4 @@ public class ClassycleAnalyser {
         this.project.isMergeInnerClasses());
   }
 
-  Writer createWriter(final File file) throws IOException {
-    return new FileWriter(file);
-  }
 }
