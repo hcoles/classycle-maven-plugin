@@ -32,6 +32,7 @@ public class ClassycleAnalyserTest {
     MockitoAnnotations.initMocks(this);
     when(this.project.getOutputDirectory()).thenReturn(testOutput());
     when(this.project.getExcludingClasses()).thenReturn(null);
+    when(this.project.getTitle()).thenReturn("title");
     this.sf = createStreamFactory();
     this.testee = new ClassycleAnalyser(this.project, this.sf);
   }

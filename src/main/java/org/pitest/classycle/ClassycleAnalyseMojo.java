@@ -10,7 +10,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
 /**
- * Run classcyle analysis
+ * Run classycle analysis
  * 
  * @goal analyse
  * @requiresProject true
@@ -45,7 +45,7 @@ public class ClassycleAnalyseMojo extends AbstractMojo implements Project {
    * which are referred in the class file by plain string constants. Only '*' is
    * interpreted as wild-card character.
    * 
-   * @parameter default-value="false"
+   * @parameter
    */
   private List<String> reflectionPatterns;
 
@@ -62,6 +62,13 @@ public class ClassycleAnalyseMojo extends AbstractMojo implements Project {
    * @parameter
    */
   private List<String> excludingClasses;
+  
+  /**
+   * Title to use for report
+   * 
+   * @parameter expression="${project.artifactId}"
+   */
+  private String title;
 
   public final void execute() throws MojoExecutionException,
       MojoFailureException {
@@ -103,6 +110,10 @@ public class ClassycleAnalyseMojo extends AbstractMojo implements Project {
 
   public List<String> getExcludingClasses() {
     return this.excludingClasses;
+  }
+
+  public String getTitle() {
+    return this.title;
   }
 
 }

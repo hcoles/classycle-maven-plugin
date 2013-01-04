@@ -18,4 +18,6 @@ public interface Project {
 
   List<String> getExcludingClasses();
 
+  String getTitle();
+
 }

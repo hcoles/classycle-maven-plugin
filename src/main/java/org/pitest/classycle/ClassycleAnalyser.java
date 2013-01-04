@@ -40,7 +40,7 @@ public class ClassycleAnalyser {
 
   private void writeReport(final Analyser analyser) throws IOException {
     final PrintWriter writer = new PrintWriter(streamFactory.createStream(XML_FILE));
-    analyser.printXML("Cycles", this.project.isPackagesOnly(), writer);
+    analyser.printXML(this.project.getTitle(), this.project.isPackagesOnly(), writer);
     writer.close();
  
     copyResourceForHtmlViewing();
