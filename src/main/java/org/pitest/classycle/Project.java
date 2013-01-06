@@ -8,8 +8,6 @@ public interface Project {
 
   String getOutputDirectory();
 
-  boolean isPackagesOnly();
-
   String getTargetDirectory();
 
   List<String> getReflectionPatterns();
@@ -17,7 +15,5 @@ public interface Project {
   List<String> getIncludingClasses();
 
   List<String> getExcludingClasses();
-
-  String getTitle();
 
 }
