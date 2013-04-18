@@ -67,8 +67,8 @@ public abstract class AbstractGoal<T extends Project> {
   private Analyser createAnalyser(final String[] classes,
       final StringPattern pattern, final StringPattern reflectionPattern,
       final boolean mergeInnerClasses) {
-    return new Analyser(classes, getPattern(), getReflectionPattern(),
-        this.project.isMergeInnerClasses());
+    return new Analyser(classes, pattern, reflectionPattern,
+        mergeInnerClasses);
   }
 
 }

@@ -4,6 +4,7 @@ target
 .settings*
 *.class
 bin
+.metadata*
 
 # Package Files #
 *.jar
