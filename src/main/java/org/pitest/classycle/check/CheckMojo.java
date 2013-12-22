@@ -22,9 +22,15 @@ public class CheckMojo extends ClassycleMojo implements CheckProject {
    * Script to check code against
    * 
    * @parameter
-   * @required
    */
   private String  dependencyDefinitionFile;
+  
+  /**
+   * Embedded dependency check definition
+   * 
+   * @parameter
+   */
+  private String dependencyDefinition;
 
   /**
    * Script to check code against
@@ -51,7 +57,11 @@ public class CheckMojo extends ClassycleMojo implements CheckProject {
   }
 
   public String getDependencyDefinition() throws IOException {
-    return Text.readTextFile(new File(this.dependencyDefinitionFile));
+    if ( dependencyDefinitionFile != null ) {
+      return Text.readTextFile(new File(this.dependencyDefinitionFile));
+    } else {
+      return dependencyDefinition;
+    }
   }
 
   public boolean isFailOnUnWantedDependencies() {
