@@ -104,7 +104,7 @@
 		<dependency>
 			<groupId>org.specs2</groupId>
 			<artifactId>classycle</artifactId>
-			<version>1.4.1</version>
+			<version>1.4.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
