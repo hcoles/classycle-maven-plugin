@@ -26,7 +26,7 @@ public abstract class ClassycleMojo extends AbstractMojo implements Project {
   /**
    * @parameter expression="${project.reporting.outputEncoding}" default-value="UTF-8"
    */
-  protected String reportEncoding;
+  private String reportEncoding;
 
   /**
    * List of zero or more wild-card patterns for fully-qualified class names
