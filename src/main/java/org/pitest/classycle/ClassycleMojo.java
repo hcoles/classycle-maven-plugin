@@ -24,6 +24,11 @@ public abstract class ClassycleMojo extends AbstractMojo implements Project {
   private boolean      mergeInnerClasses;
 
   /**
+   * @parameter expression="${project.reporting.outputEncoding}" default-value="UTF-8"
+   */
+  protected String reportEncoding;
+
+  /**
    * List of zero or more wild-card patterns for fully-qualified class names
    * which are referred in the class file by plain string constants. Only '*' is
    * interpreted as wild-card character.
@@ -71,4 +76,7 @@ public abstract class ClassycleMojo extends AbstractMojo implements Project {
     return this.excludingClasses;
   }
 
+  public final String getReportEncoding() {
+    return this.reportEncoding;
+  }
 }

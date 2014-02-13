@@ -2,6 +2,7 @@ package org.pitest.classycle.analyse;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import org.pitest.classycle.AbstractGoal;
@@ -25,14 +26,13 @@ class AnalyseGoal extends AbstractGoal<AnalyseProject> {
   }
 
   private void writeReport(final Analyser analyser) throws IOException {
-    final PrintWriter writer = new PrintWriter(
-        this.streamFactory.createStream(XML_FILE));
+    final PrintWriter writer = new PrintWriter(new OutputStreamWriter(
+        this.streamFactory.createStream(XML_FILE), project.getReportEncoding()));
     analyser.printXML(this.project.getTitle(), this.project.isPackagesOnly(),
         writer);
     writer.close();
 
     copyResourceForHtmlViewing();
-
   }
 
   private void copyResourceForHtmlViewing() throws IOException {
