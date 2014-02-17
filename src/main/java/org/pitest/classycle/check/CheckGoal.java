@@ -9,13 +9,10 @@ import org.pitest.classycle.AbstractGoal;
 import org.pitest.classycle.StreamFactory;
 
 import classycle.Analyser;
-import classycle.dependency.DefaultResultRenderer;
 import classycle.dependency.DependencyChecker;
 import classycle.dependency.ResultRenderer;
 
 class CheckGoal extends AbstractGoal<CheckProject> {
-
-  static final String RESULTS_FILE = "checkresults.txt";
 
   CheckGoal(final CheckProject project, final StreamFactory streamFactory) {
     super(project, streamFactory);
@@ -28,7 +25,7 @@ class CheckGoal extends AbstractGoal<CheckProject> {
     final DependencyChecker dependencyChecker = new DependencyChecker(analyser,
         this.project.getDependencyDefinition(), properties, getRenderer());
     final PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(
-        this.streamFactory.createStream(RESULTS_FILE), project.getReportEncoding()));
+        this.streamFactory.createStream(project.getOutputFile()), project.getReportEncoding()));
     try {
       if (!dependencyChecker.check(printWriter)) {
         return !this.project.isFailOnUnWantedDependencies();
@@ -40,7 +37,13 @@ class CheckGoal extends AbstractGoal<CheckProject> {
   }
 
   private ResultRenderer getRenderer() {
-    return new DefaultResultRenderer();
+    try {
+      return project.getResultRenderer().newInstance();
+    } catch (InstantiationException e) {
+      throw new RuntimeException("Could not instantiate " + project.getResultRenderer(), e);
+    } catch (IllegalAccessException e) {
+      throw new RuntimeException("Could not access " + project.getResultRenderer(), e);
+    }
   }
 
 }
