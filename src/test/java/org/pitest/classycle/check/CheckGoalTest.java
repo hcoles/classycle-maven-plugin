@@ -19,6 +19,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.pitest.classycle.StreamFactory;
 
+import classycle.dependency.DefaultResultRenderer;
+
 public class CheckGoalTest {
 
   private final String                             CHECK_THAT_WILL_FAIL     = "[A] = Doesnotexit \n check sets [A]";
@@ -39,6 +41,9 @@ public class CheckGoalTest {
     when(this.project.getOutputDirectory()).thenReturn(testOutput());
     when(this.project.getExcludingClasses()).thenReturn(null);
     when(this.project.getReportEncoding()).thenReturn(CharEncoding.UTF_8);
+
+    Class renderer = DefaultResultRenderer.class;
+    when(this.project.getResultRenderer()).thenReturn(renderer);
     this.sf = createStreamFactory();
     this.testee = new CheckGoal(this.project, this.sf);
   }
@@ -99,9 +104,10 @@ public class CheckGoalTest {
   public void shouldWriteReportToFile() throws IOException {
     when(this.project.getDependencyDefinition()).thenReturn(
         this.CHECK_THAT_WILL_NOT_FAIL);
+    when(this.project.getOutputFile()).thenReturn(CheckMojo.TEXT_RESULT_FILE);
     this.testee.analyse();
-    System.out.println(this.output.get(CheckGoal.RESULTS_FILE));
-    assertThat(this.output.get(CheckGoal.RESULTS_FILE)).isNotNull();
+    System.out.println(this.output.get(CheckMojo.TEXT_RESULT_FILE));
+    assertThat(this.output.get(CheckMojo.TEXT_RESULT_FILE)).isNotNull();
   }
 
 }

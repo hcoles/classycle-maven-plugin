@@ -24,7 +24,7 @@ Classycle rules can be supplied via a file specified with the dependencyDefiniti
 <plugin>
 	<groupId>org.pitest</groupId>
 	<artifactId>classycle</artifactId>
-	<version>0.2</version>
+	<version>0.4</version>
 	<executions>
 		<execution>
 			<id>verify</id>
@@ -37,11 +37,15 @@ Classycle rules can be supplied via a file specified with the dependencyDefiniti
 					show allResults
 					check absenceOfPackageCycles > 1 in com.example*
 				</dependencyDefinition>
+
+				<!-- This can be classycle.dependency.DefaultResultRenderer 
+					for text (the default if omitted) or 
+					classycle.dependency.XMLResultRenderer for xml -->
+				<resultRenderer>classycle.dependency.DefaultResultRenderer</resultRenderer>
 			</configuration>
 		</execution>
 	</executions>
 </plugin>
-
 ```
 
 If both a file and an embedded definition are supplied, the file will be used.
