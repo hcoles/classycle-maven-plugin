@@ -5,7 +5,7 @@ Simple maven plugin for [classycle](http://classycle.sourceforge.net/)
 Run
 
 ```
-mvn org.pitest:classycle:analyse
+mvn classycle:analyse
 ```
 
 to generate an xml report within the target directory.
@@ -13,7 +13,7 @@ to generate an xml report within the target directory.
 and
 
 ```
-mvn org.pitest:classycle:check
+mvn classycle:check
 ```
 
 to check a project against a set of rules. 
@@ -23,7 +23,7 @@ Classycle rules can be supplied via a file specified with the dependencyDefiniti
 ```xml
 <plugin>
 	<groupId>org.pitest</groupId>
-	<artifactId>classycle</artifactId>
+	<artifactId>classycle-maven-plugin</artifactId>
 	<version>0.2</version>
 	<executions>
 		<execution>
