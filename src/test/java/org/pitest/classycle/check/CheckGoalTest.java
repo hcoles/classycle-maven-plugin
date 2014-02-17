@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.CharEncoding;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,6 +38,7 @@ public class CheckGoalTest {
     MockitoAnnotations.initMocks(this);
     when(this.project.getOutputDirectory()).thenReturn(testOutput());
     when(this.project.getExcludingClasses()).thenReturn(null);
+    when(this.project.getReportEncoding()).thenReturn(CharEncoding.UTF_8);
     this.sf = createStreamFactory();
     this.testee = new CheckGoal(this.project, this.sf);
   }

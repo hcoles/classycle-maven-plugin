@@ -1,6 +1,7 @@
 package org.pitest.classycle.check;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Properties;
 
@@ -26,8 +27,8 @@ class CheckGoal extends AbstractGoal<CheckProject> {
     final Properties properties = System.getProperties();
     final DependencyChecker dependencyChecker = new DependencyChecker(analyser,
         this.project.getDependencyDefinition(), properties, getRenderer());
-    final PrintWriter printWriter = new PrintWriter(
-        this.streamFactory.createStream(RESULTS_FILE));
+    final PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(
+        this.streamFactory.createStream(RESULTS_FILE), project.getReportEncoding()));
     try {
       if (!dependencyChecker.check(printWriter)) {
         return !this.project.isFailOnUnWantedDependencies();
