@@ -58,20 +58,20 @@ Configuration options are supported based on the classycle ant task.
 
 ## 0.4
 
-Support XML output
-Rename plugin to enable unqualified classycle:check syntax
+* Support XML output
+* Rename plugin to enable unqualified classycle:check syntax
 
 ## 0.3
 
-Support for Java 6.
-Support for `${project.reporting.outputEncoding}`
+* Support for Java 6.
+* Support for `${project.reporting.outputEncoding}`
 
 ## 0.2
 
-Added support for embedded dependency defintions.
+* Support for embedded dependency defintions.
 
 ## 0.1
 
-Initial release
+* Initial release
 
 		
