@@ -23,8 +23,8 @@ Classycle rules can be supplied via a file specified with the dependencyDefiniti
 ```xml
 <plugin>
 	<groupId>org.pitest</groupId>
-	<artifactId>classycle-maven-plugin</artifactId>
-	<version>0.2</version>
+	<artifactId>classycle</artifactId>
+	<version>0.4-SNAPSHOT</version>
 	<executions>
 		<execution>
 			<id>verify</id>
@@ -37,11 +37,15 @@ Classycle rules can be supplied via a file specified with the dependencyDefiniti
 					show allResults
 					check absenceOfPackageCycles > 1 in com.example*
 				</dependencyDefinition>
+
+				<!-- This can be classycle.dependency.DefaultResultRenderer 
+					for text (the default if omitted) or 
+					classycle.dependency.XMLResultRenderer for xml -->
+				<resultRenderer>classycle.dependency.DefaultResultRenderer</resultRenderer>
 			</configuration>
 		</execution>
 	</executions>
 </plugin>
-
 ```
 
 If both a file and an embedded definition are supplied, the file will be used.
@@ -50,13 +54,23 @@ By default a violation will break the build - details of violations are written 
 
 Configuration options are supported based on the classycle ant task.
 
-#Releases
+# Releases
 
-##0.2
+## 0.4
+
+Support XML output
+Rename plugin to enable unqualified classycle:check syntax
+
+## 0.3
+
+Support for Java 6.
+Support for `${project.reporting.outputEncoding}`
+
+## 0.2
 
 Added support for embedded dependency defintions.
 
-##0.1
+## 0.1
 
 Initial release
 
