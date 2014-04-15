@@ -23,8 +23,8 @@ Classycle rules can be supplied via a file specified with the dependencyDefiniti
 ```xml
 <plugin>
 	<groupId>org.pitest</groupId>
-	<artifactId>classycle</artifactId>
-	<version>0.4-SNAPSHOT</version>
+	<artifactId>classycle-maven-plugin</artifactId>
+	<version>0.4</version>
 	<executions>
 		<execution>
 			<id>verify</id>
