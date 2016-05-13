@@ -26,6 +26,10 @@ public abstract class AbstractGoal<T extends Project> {
   public final boolean analyse() throws IOException {
     final File classDir = new File(this.project.getOutputDirectory());
 
+    if(!classDir.exists()) {
+    	return true;
+    }
+    
     final Analyser analyser = createAnalyser(
         new String[] { classDir.getAbsolutePath() }, getPattern(),
         getReflectionPattern(), this.project.isMergeInnerClasses());

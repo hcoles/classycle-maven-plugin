@@ -1,6 +1,7 @@
 package org.pitest.classycle.analyse;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
@@ -145,6 +146,14 @@ public class AnalyseGoalTest {
   public void shouldWriteImagesOutputDir() throws IOException {
     this.testee.analyse();
     assertThat(this.output.get("images/class.png")).isNotNull();
+  }
+  
+  @Test
+  public void shouldNotFailWhenOutputDirDoesNotExists()
+      throws IOException {
+    when(this.project.getOutputDirectory()).thenReturn("/some/dummy/directory");
+    
+    assertTrue(this.testee.analyse());
   }
 
   String xmlOutput() {
