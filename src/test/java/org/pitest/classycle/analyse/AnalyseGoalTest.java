@@ -144,7 +144,7 @@ public class AnalyseGoalTest {
   @Test
   public void shouldWriteImagesOutputDir() throws IOException {
     this.testee.analyse();
-    assertThat(this.output.get("images/class.png")).isNotNull();
+    assertThat(this.output.get("images" + File.separator + "class.png")).isNotNull();
   }
 
   String xmlOutput() {
